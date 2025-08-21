@@ -39,8 +39,8 @@
             const devtoolsMessage = `<h1 style="color:red">🛑 Đừng mở DevTools!</h1>`;
 
             function blockIfDevtools() {
-                const opened = window.outerWidth - window.innerWidth > 160
-                            || window.outerHeight - window.innerHeight > 160;
+                const opened = window.outerWidth - window.innerWidth >= 160
+                || window.outerWidth - window.innerWidth <= 0;
                 if (opened && !blocked) {
                     blocked = true;
                     document.body.innerHTML = devtoolsMessage;
@@ -58,5 +58,6 @@
 
 
 </html>
+
 
 
