@@ -35,31 +35,27 @@
         }
 
         (function () {
-            let devtoolsOpened = false;
+            let blocked = false;
             const devtoolsMessage = `<h1 style="color:red">🛑 Đừng mở DevTools!</h1>`;
 
-            function checkDevTools() {
-                // So sánh kích thước của đối tượng console
-                // Đây là cách phát hiện phổ biến nhất và hiệu quả nhất
-                const sizeCheck = /Mobi|Android/i.test(navigator.userAgent) ?
-                    window.innerHeight - screen.height > 100 || window.innerWidth - screen.width > 100 :
-                    window.outerHeight - window.innerHeight > 160 || window.outerWidth - window.innerWidth > 160;
-
-                if (sizeCheck) {
-                    if (!devtoolsOpened) {
-                        devtoolsOpened = true;
-                        document.body.innerHTML = devtoolsMessage;
-                    }
-                } else {
-                    devtoolsOpened = false;
+            function blockIfDevtools() {
+                const opened = window.outerWidth - window.innerWidth < 0 || window.outerWidth - window.innerWidth > 160
+                            || window.outerHeight - window.innerHeight > 160;
+                if (opened && !blocked) {
+                    blocked = true;
+                    document.body.innerHTML = devtoolsMessage;
+                } 
+                else if (!opened && blocked) {
+                    blocked = false;
+                    location.reload(); // load lại để khôi phục nội dung gốc
                 }
             }
 
-            // Cải thiện kiểm tra bằng cách sử dụng một hàm khác hoặc một thư viện chuyên dụng.
-            setInterval(checkDevTools, 500);
+            setInterval(blockIfDevtools, 500);
         })();
     </script>
 </body>
 
 
 </html>
+
