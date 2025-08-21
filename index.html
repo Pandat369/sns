@@ -35,29 +35,32 @@
         }
 
         (function () {
-            let blocked = false;
-            const devtoolsMessage = `<h1 style="color:red">🛑 Đừng mở DevTools!</h1>`;
+    let blocked = false;
+    const devtoolsMessage = `<h1 style="color:red">🛑 Đừng mở DevTools!</h1>`;
 
-            function blockIfDevtools() {
-                const opened = window.outerWidth - window.innerWidth >= 160
-                || window.outerWidth - window.innerWidth <= 0;
-                if (opened && !blocked) {
-                    blocked = true;
-                    document.body.innerHTML = devtoolsMessage;
-                } 
-                else if (!opened && blocked) {
-                    blocked = false;
-                    location.reload(); // load lại để khôi phục nội dung gốc
-                }
-            }
+    function blockIfDevtools() {
+        // Lấy hiệu tuyệt đối; chỉ coi là "mở" khi khác biệt lớn (ngưỡng 160 px)
+        const diff = Math.abs((window.outerWidth || 0) - (window.innerWidth || 0));
+        const opened = diff >= 160; // ngưỡng 160px: khá an toàn cho desktop docked
 
-            setInterval(blockIfDevtools, 500);
-        })();
+        if (opened && !blocked) {
+            blocked = true;
+            document.body.innerHTML = devtoolsMessage;
+        } else if (!opened && blocked) {
+            blocked = false;
+            location.reload();
+        }
+    }
+
+    setInterval(blockIfDevtools, 500);
+})();
+
     </script>
 </body>
 
 
 </html>
+
 
 
 
