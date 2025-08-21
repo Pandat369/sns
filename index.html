@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Demo chống copy</title>
+</head>
+
+<body>
+    <h1>Website chính thức</h1>
+
+    <script>
+        // Domain gốc của bạn
+        const officialDomain = "mywebsite.com";
+
+        // Lấy domain hiện tại
+        const currentDomain = window.location.hostname;
+
+        // Nếu không phải domain gốc => hiển thị IP
+        if (currentDomain !== officialDomain) {
+            fetch("https://api.ipify.org?format=json")
+                .then(res => res.json())
+                .then(data => {
+                    document.body.innerHTML = ""; // xoá hết nội dung
+                    const warningDiv = document.createElement("div");
+                    warningDiv.style.color = "red";
+                    warningDiv.style.fontWeight = "bold";
+                    warningDiv.style.fontSize = "20px";
+                    warningDiv.style.textAlign = "center";
+                    warningDiv.style.marginTop = "50px";
+                    warningDiv.innerText =
+                        "⚠️ \n  \nCảnh báo bảo mật!\n Bạn đang truy cập bản sao của website.\nIP của bạn là: " + data.ip + "\n Sao chép mã nguồn là vi phạm.";
+                    document.body.appendChild(warningDiv);
+                });
+        }
+
+        (function () {
+            let devtoolsOpened = false;
+            const devtoolsMessage = `<h1 style="color:red">🛑 Đừng mở DevTools!</h1>`;
+
+            function checkDevTools() {
+                // So sánh kích thước của đối tượng console
+                // Đây là cách phát hiện phổ biến nhất và hiệu quả nhất
+                const sizeCheck = /Mobi|Android/i.test(navigator.userAgent) ?
+                    window.innerHeight - screen.height > 100 || window.innerWidth - screen.width > 100 :
+                    window.outerHeight - window.innerHeight > 160 || window.outerWidth - window.innerWidth > 160;
+
+                if (sizeCheck) {
+                    if (!devtoolsOpened) {
+                        devtoolsOpened = true;
+                        document.body.innerHTML = devtoolsMessage;
+                    }
+                } else {
+                    devtoolsOpened = false;
+                }
+            }
+
+            // Cải thiện kiểm tra bằng cách sử dụng một hàm khác hoặc một thư viện chuyên dụng.
+            setInterval(checkDevTools, 500);
+        })();
+    </script>
+</body>
+
+</html>
