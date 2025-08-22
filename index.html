@@ -3,11 +3,21 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Demo chống copy</title>
+    <title>Phát hiện DevTools & Responsive Mode</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 100px;
+        }
+    </style>
 </head>
 
 <body>
-    <h1>Website chính thức</h1>
+    <div id="app">
+        <h1>Chào mừng bạn!</h1>
+        <p>Đây là trang demo nội dung gốc.</p>
+    </div>
 
     <script>
         // Domain gốc của bạn
@@ -28,7 +38,7 @@
                     warningDiv.style.fontWeight = "bold";
                     warningDiv.style.fontSize = "20px";
                     warningDiv.style.textAlign = "center";
-                    warningDiv.style.marginTop = "100px";
+                    warningDiv.style.marginTop = "60px";
                     warningDiv.style.padding = "20px";
 
                     // Tạo ảnh GIF
@@ -58,29 +68,26 @@
         }
 
         (function () {
-            let devtoolsOpened = false;
+            let blocked = false;
             const devtoolsMessage = `<h1 style="color:red">🛑 Đừng mở DevTools!</h1>`;
 
-            function checkDevTools() {
-                // So sánh kích thước của đối tượng console
-                // Đây là cách phát hiện phổ biến nhất và hiệu quả nhất
-                const sizeCheck = /Mobi|Android/i.test(navigator.userAgent) ?
-                    window.innerHeight - screen.height > 100 || window.innerWidth - screen.width > 100 :
-                    window.outerHeight - window.innerHeight > 160 || window.outerWidth - window.innerWidth > 160;
+            function blockIfDevtools() {
+                // Lấy hiệu tuyệt đối; chỉ coi là "mở" khi khác biệt lớn (ngưỡng 160 px)
+                const diff = Math.abs((window.outerWidth || 200) - (window.innerWidth || 20));
+                const opened = diff >= 160; // ngưỡng 160px: khá an toàn cho desktop docked
 
-                if (sizeCheck) {
-                    if (!devtoolsOpened) {
-                        devtoolsOpened = true;
-                        document.body.innerHTML = devtoolsMessage;
-                    }
-                } else {
-                    devtoolsOpened = false;
+                if (opened && !blocked) {
+                    blocked = true;
+                    document.body.innerHTML = devtoolsMessage;
+                } else if (!opened && blocked) {
+                    blocked = false;
+                    location.reload();
                 }
             }
 
-            // Cải thiện kiểm tra bằng cách sử dụng một hàm khác hoặc một thư viện chuyên dụng.
-            setInterval(checkDevTools, 500);
+            setInterval(blockIfDevtools, 500);
         })();
+
     </script>
 </body>
 
