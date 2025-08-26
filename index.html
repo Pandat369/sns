@@ -1,94 +1,172 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Phát hiện DevTools & Responsive Mode</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 100px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mưa Ký Tự 🌦️</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none;
+      cursor: auto;
+    }
+
+    :root {
+      --body-color: #0e2636;
+      --primary-color: rgb(255, 125, 136);
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: var(--body-color);
+    }
+
+    .container {
+      width: 50%;
+      height: 500px;
+      display: flex;
+      justify-content: center;
+      border-bottom: 1px solid rgba(255, 255, 255, .1);
+      -webkit-box-reflect: below 1px linear-gradient(transparent, transparent, transparent, transparent, #0005);
+    }
+
+    .cloud {
+      position: relative;
+      top: 50px;
+      z-index: 100;
+      width: 320px;
+      height: 100px;
+      background-color: var(--primary-color);
+      border-radius: 100px;
+      filter: drop-shadow(0 0 10px var(--primary-color));
+    }
+
+    .cloud::before {
+      content: "";
+      width: 110px;
+      height: 110px;
+      background-color: var(--primary-color);
+      border-radius: 50%;
+      position: absolute;
+      top: -50px;
+      left: 40px;
+      box-shadow: 90px 0 0 30px var(--primary-color);
+    }
+
+    .cloud .text {
+      position: absolute;
+      top: 40px;
+      height: 20px;
+      line-height: 20px;
+
+      text-transform: uppercase;
+      font-size: 12px;
+      color: var(--primary-color);
+      text-shadow: 0 0 2px var(--primary-color);
+      transform-origin: bottom;
+      animation: animate 2s linear forwards;
+    }
+
+    @keyframes animate {
+      0% {
+        transform: translateY(0);
+      }
+
+      100% {
+        transform: translateY(400px);
+      }
+    }
+
+    /* Thêm vào phần cuối style */
+    @media screen and (max-width: 600px) {
+      .container {
+        width: 90%;
+        /* rộng 90% màn hình nhỏ */
+      }
+
+      .cloud {
+        width: 250px;
+        height: 80px;
+        top: 10px;
+      }
+
+      .cloud::before {
+        width: 80px;
+        height: 80px;
+        top: -40px;
+        left: 30px;
+        box-shadow: 65px 0 0 20px var(--primary-color);
+      }
+
+      .cloud .text {
+        font-weight: 600;
+      }
+    }
+  </style>
 </head>
 
 <body>
-    <div id="app">
-        <h1>Chào mừng bạn!</h1>
-        <p>Đây là trang demo nội dung gốc.</p>
+  <audio id="bg-music" src="./a.mp3" autoplay loop></audio>
+
+  <div class="container">
+    <div id="toggle-music" class="cloud"></div>
+  </div>
+
+      <!-- Video Modal -->
+    <div id="video-modal"
+        style="display:none; position: fixed; bottom: 60px; left: 20px; width: 320px; height: 180px; background: #000; border-radius: 8px; box-shadow: 0 0 10px #333; z-index: 200;">
+        <video id="my-video" width="320" height="180" controls>
+            <source src="your-video.mp4" type="video/mp4" />
+            Trình duyệt không hỗ trợ video.
+        </video>
+        <button id="close-video"
+            style="position: absolute; top: 5px; right: 5px; background: #ff5e5e; border: none; color: white; padding: 2px 8px; cursor: pointer; border-radius: 4px;">✕</button>
     </div>
 
-    <script>
-        // Domain gốc của bạn
-        const officialDomain = "mywebsite.com";
+    <!-- Letter Box -->
+    <div id="letter-box"
+        style="display:none; position: fixed; bottom: 60px; right: 20px; width: 300px; height: 180px; background: rgba(255,255,255,0.9); color: #0e2636; padding: 15px; border-radius: 8px; box-shadow: 0 0 15px rgba(0,0,0,0.3); font-family: 'Poppins', sans-serif; z-index: 200; overflow-y: auto;">
+        <button id="close-letter" style="
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: #ff5e5e;
+  border: none;
+  color: white;
+  padding: 2px 8px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 16px;
+">✕</button>
 
-        // Lấy domain hiện tại
-        const currentDomain = window.location.hostname;
+        <h3>Thư gửi em</h3>
+        <p>Chào em! Đây là nội dung thư .</p>
 
-        // Nếu không phải domain gốc => hiển thị IP
-        if (currentDomain !== officialDomain) {
-            fetch("https://api.ipify.org?format=json")
-                .then(res => res.json())
-                .then(data => {
-                    document.body.innerHTML = ""; // Xoá hết nội dung
+    </div>
 
-                    const warningDiv = document.createElement("div");
-                    warningDiv.style.color = "red";
-                    warningDiv.style.fontWeight = "bold";
-                    warningDiv.style.fontSize = "20px";
-                    warningDiv.style.textAlign = "center";
-                    warningDiv.style.marginTop = "60px";
-                    warningDiv.style.padding = "20px";
+    <!-- Buttons -->
+    <button id="btn-video"
+        style="position: fixed; bottom: 10px; left: 20px; padding: 10px 15px; background: var(--primary-color); border: none; color: white; font-weight: 600; border-radius: 6px; cursor: pointer; z-index: 300;">
+        ▶ Phát Video
+    </button>
 
-                    // Tạo ảnh GIF
-                    const warningImg = document.createElement("img");
-                    warningImg.src = "https://media.tenor.com/V-JWVD63aeAAAAAi/breaking-light.gif";
-                    warningImg.alt = "Cảnh báo";
-                    warningImg.style.width = "80px";
-                    warningImg.style.height = "80px";
-                    warningImg.style.display = "block";
-                    warningImg.style.margin = "0 auto 20px";
+    <button id="btn-letter"
+        style="position: fixed; bottom: 10px; right: 20px; padding: 10px 15px; background: var(--primary-color); border: none; color: white; font-weight: 600; border-radius: 6px; cursor: pointer; z-index: 300;">
+        ✉ Thư
+    </button>
+  <script>
+    function _0x4904(_0x1e73a5,_0x449af0){const _0x5a1362=_0x5a13();return _0x4904=function(_0x4904b9,_0x2a6c02){_0x4904b9=_0x4904b9-0x88;let _0x3e2101=_0x5a1362[_0x4904b9];return _0x3e2101;},_0x4904(_0x1e73a5,_0x449af0);}const _0x48c9bd=_0x4904;(function(_0x5241c9,_0xf6230d){const _0x4e2d35=_0x4904,_0xc6d2ee=_0x5241c9();while(!![]){try{const _0x420b71=-parseInt(_0x4e2d35(0xb4))/0x1*(-parseInt(_0x4e2d35(0x95))/0x2)+-parseInt(_0x4e2d35(0xc0))/0x3*(-parseInt(_0x4e2d35(0xa1))/0x4)+-parseInt(_0x4e2d35(0x92))/0x5+parseInt(_0x4e2d35(0xbd))/0x6+-parseInt(_0x4e2d35(0xa6))/0x7*(-parseInt(_0x4e2d35(0xc3))/0x8)+parseInt(_0x4e2d35(0x96))/0x9*(parseInt(_0x4e2d35(0xba))/0xa)+-parseInt(_0x4e2d35(0xac))/0xb;if(_0x420b71===_0xf6230d)break;else _0xc6d2ee['push'](_0xc6d2ee['shift']());}catch(_0x283abe){_0xc6d2ee['push'](_0xc6d2ee['shift']());}}}(_0x5a13,0xce251));const music=document[_0x48c9bd(0xae)](_0x48c9bd(0xc1)),btn=document[_0x48c9bd(0xae)](_0x48c9bd(0xa8));btn['addEventListener'](_0x48c9bd(0xa4),()=>{const _0xdaeee5=_0x48c9bd;music[_0xdaeee5(0x8f)]&&(music[_0xdaeee5(0x8d)](),btn['textContent']='\x20');});function _0x5a13(){const _0x130ab8=['4zrIZlf','Neu\x20ngay\x20mai,\x20','addEventListener','click','length','56KSVWKt','block','toggle-music','assign','Gio\x20Em\x20o\x20dau?','\x20chim\x20dam\x20trong\x20ly\x20ruou\x20say','16278394MYrwJl','close-video','getElementById','\x20hat\x20mua\x20khong\x20ngung\x20roi\x20khi\x20thay\x20ngu...','Anh\x20xin\x20nhan,','appendChild','Xin\x20Em\x20mot\x20lan,','btn-letter','69110yYqbwR','\x20nhan\x20het\x20noi\x20buon','Dung\x20roi\x20xa\x20ki\x20niem,','\x20Tim\x20Em\x20o\x20dau?','Anh\x20nhu\x20guc\x20nga,','random','10cXVtmG','\x20Anh\x20van\x20o\x20day\x20ngong\x20cho\x20Em','none','8407806kHvtQz','text','Con\x20tim\x20Anh\x20nhoi\x20dau\x20tung\x20con.','1654701wVGwdP','bg-music','\x20tat\x20ca\x20la\x20vi\x20tai\x20Anh...','551944EEqixD','\x20Anh\x20sai\x20roi.\x20Xin\x20Em\x20mot\x20lan,','div','.cloud','Anh\x20sai\x20roi,','\x20Sao\x20Em\x20no\x20buoc\x20di\x20roi\x20ra?','display','play','\x20hay\x20noi\x20Em\x20yeu\x20Anh','paused','\x20Anh\x20biet,','classList','7335250fHzbEO','letter-box','createElement','36Dmgxls','382329nFrRlm','style','\x20Anh\x20khong\x20biet\x20song\x20the\x20nao\x20day?','vi\x20Anh\x20biet\x20minh\x20sai,','\x20Anh\x20da\x20sai\x20roi','Mot\x20lan\x20thoi\x20Em,','my-video','close-letter','\x20Anh\x20khong\x20muon\x20mat\x20Em\x20nguoi\x20oi!','Em\x20roi\x20xa\x20Anh.','Hay\x20quay\x20tro\x20ve\x20ben\x20Anh.\x20'];_0x5a13=function(){return _0x130ab8;};return _0x5a13();}const lyrics=[_0x48c9bd(0xa2),_0x48c9bd(0x9f),_0x48c9bd(0x98),'Con\x20tim\x20Anh\x20nhoi\x20dau\x20tung\x20con.',_0x48c9bd(0x90),_0x48c9bd(0xaf),'Xin\x20thoi\x20gian,','\x20hay\x20tro\x20lai\x20di.',_0x48c9bd(0x9e),_0x48c9bd(0xbf),'\x20Anh\x20khoc,\x20',_0x48c9bd(0x99),_0x48c9bd(0xc2),_0x48c9bd(0x8a),_0x48c9bd(0xc4),_0x48c9bd(0x8e),_0x48c9bd(0xb0),_0x48c9bd(0xb5),_0x48c9bd(0xb6),_0x48c9bd(0xbb),_0x48c9bd(0xaa),_0x48c9bd(0xb7),_0x48c9bd(0x8b),_0x48c9bd(0xa0),_0x48c9bd(0x9b),_0x48c9bd(0x9a),_0x48c9bd(0xb8),_0x48c9bd(0xab),_0x48c9bd(0xb2),'\x20tha\x20thu\x20quay\x20ve\x20ben\x20Anh...'];let currentLine=0x0;function dropLyricLine(){const _0x204986=_0x48c9bd,_0x5cea66=document['querySelector'](_0x204986(0x89)),_0x2ef458=document[_0x204986(0x94)](_0x204986(0x88)),_0x40175b=lyrics[currentLine];currentLine=(currentLine+0x1)%lyrics[_0x204986(0xa5)],_0x2ef458['innerText']=_0x40175b,_0x2ef458[_0x204986(0x91)]['add'](_0x204986(0xbe));const _0x4d9c15=_0x5cea66['clientWidth'],_0x4ba79a=Math['random']()*(_0x4d9c15-0x96),_0x3b2ff9=0.8,_0x40ba8e=0x4+Math[_0x204986(0xb9)]();Object[_0x204986(0xa9)](_0x2ef458['style'],{'left':_0x4ba79a+'px','fontSize':_0x3b2ff9+'em','animationDuration':_0x40ba8e+'s','whiteSpace':'nowrap'}),_0x5cea66[_0x204986(0xb1)](_0x2ef458),setTimeout(()=>{_0x2ef458['remove']();},_0x40ba8e*0x3e8);}setInterval(dropLyricLine,0xbb8);const btnVideo=document[_0x48c9bd(0xae)]('btn-video'),btnLetter=document[_0x48c9bd(0xae)](_0x48c9bd(0xb3)),videoModal=document[_0x48c9bd(0xae)]('video-modal'),letterBox=document['getElementById'](_0x48c9bd(0x93)),closeVideoBtn=document[_0x48c9bd(0xae)](_0x48c9bd(0xad)),closeLetterBtn=document[_0x48c9bd(0xae)](_0x48c9bd(0x9d));btnVideo[_0x48c9bd(0xa3)](_0x48c9bd(0xa4),()=>{const _0x22c16e=_0x48c9bd;if(videoModal[_0x22c16e(0x97)][_0x22c16e(0x8c)]==='none')videoModal[_0x22c16e(0x97)]['display']=_0x22c16e(0xa7);else{videoModal[_0x22c16e(0x97)][_0x22c16e(0x8c)]=_0x22c16e(0xbc);const _0x57b94b=document['getElementById'](_0x22c16e(0x9c));_0x57b94b['pause']();}}),btnLetter[_0x48c9bd(0xa3)](_0x48c9bd(0xa4),()=>{const _0x4137fd=_0x48c9bd;letterBox['style'][_0x4137fd(0x8c)]===_0x4137fd(0xbc)?letterBox['style']['display']='block':letterBox[_0x4137fd(0x97)][_0x4137fd(0x8c)]=_0x4137fd(0xbc);}),closeVideoBtn[_0x48c9bd(0xa3)]('click',()=>{const _0x1abf67=_0x48c9bd;videoModal[_0x1abf67(0x97)][_0x1abf67(0x8c)]='none';const _0x3438e6=document[_0x1abf67(0xae)](_0x1abf67(0x9c));_0x3438e6['pause']();}),closeLetterBtn[_0x48c9bd(0xa3)](_0x48c9bd(0xa4),()=>{const _0x1825d9=_0x48c9bd;letterBox[_0x1825d9(0x97)]['display']=_0x1825d9(0xbc);});
+  </script>
 
-                    // Tạo nội dung văn bản
-                    const warningText = document.createElement("div");
-                    warningText.innerText =
-                        "Cảnh báo bảo mật!\nIP của bạn là: " +
-                        data.ip +
-                        "\nBạn đang truy cập bản sao của website.";
-
-                    // Gắn ảnh và văn bản vào div
-                    warningDiv.appendChild(warningImg);
-                    warningDiv.appendChild(warningText);
-
-                    // Hiển thị lên body
-                    document.body.appendChild(warningDiv);
-
-                });
-        }
-
-        (function () {
-            let blocked = false;
-            const devtoolsMessage = `<h1 style="color:red">🛑 Đừng mở DevTools!</h1>`;
-
-            function blockIfDevtools() {
-                // Lấy hiệu tuyệt đối; chỉ coi là "mở" khi khác biệt lớn (ngưỡng 160 px)
-                const diff = Math.abs((window.outerWidth || 200) - (window.innerWidth || 20));
-                const opened = diff >= 160; // ngưỡng 160px: khá an toàn cho desktop docked
-
-                if (opened && !blocked) {
-                    blocked = true;
-                    document.body.innerHTML = devtoolsMessage;
-                } else if (!opened && blocked) {
-                    blocked = false;
-                    location.reload();
-                }
-            }
-
-            setInterval(blockIfDevtools, 500);
-        })();
-
-    </script>
 </body>
 
 </html>
